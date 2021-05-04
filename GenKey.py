@@ -21,8 +21,8 @@ def genKey(p, q):
 
 
 def main(): 
-    p = bitLength(2048)
-    q = bitLength(2048)
+    p = bitLength(1024)
+    q = bitLength(1024)
     publicKey, privateKey = genKey(p, q)
     print(publicKey)
     print(privateKey)
