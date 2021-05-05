@@ -33,14 +33,22 @@ def oaep_encode(m: string, n: int, k0: int, k1: int, f_hash: Callable = sha3_256
     r = ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(k0))
     # 3) Usa o oráculo G = mgf1 para expandir r de k0 para n - k0 de tamanho
     rExpanded = mgf1(bytes(r, "UTF-8"), n - k0)
+    # 4) Faz o xor para gerar os duas partes dos bytes
     X = xor(bytes(m, "UTF-8"), rExpanded)
     Y = xor(bytes(r, "UTF-8"), sha3_256(X))    
-    print(X)
-    print(Y)
+    # 5) Concatena os bytes 
+    result = b"".join([X, Y])
+    return X, Y, result
+
+def oaep_decode(X: bytes, Y: bytes, n = 1024, k0 = 32):
+    r = xor(Y, sha3_256(X))
+    m = xor(X, mgf1(r, n - k0))
+    return r, m
     
     
 if __name__ == "__main__":
     print(hexlify(sha3_256(b"Hello World")))
     print(hexlify(mgf1(b"Hello World", 32)))
-    oaep_encode("Hello World", 1024, 32, 16)
+    X, Y, result = oaep_encode("Hello World", 1024, 32, 16)
+    oaep_decode(X, Y)
     
