@@ -25,8 +25,8 @@ def mgf1(seed: bytes, mlen: int, f_hash: Callable = sha3_256):
     
 
 def oaep_encode(m: string, n: int, k0: int, k1: int, f_hash: Callable = sha3_256, f_mfg1: Callable = mgf1 ):
-    m = m.ljust(n - k0 - k1) # messagem tem que ser de tamanho n -k0 -k1
-    # 1) Adicionar k1 zeros para a mensagem  
+    #m = m.ljust(n - k0 - k1) # messagem tem que ser de tamanho n -k0 -k1  
+    # 1) Adicionar k1 zeros para a mensagem
     for i in range(k1):
         m += str(0)
     # 2) Gera um r aleatório de tamanho k0
@@ -43,6 +43,7 @@ def oaep_encode(m: string, n: int, k0: int, k1: int, f_hash: Callable = sha3_256
 def oaep_decode(X: bytes, Y: bytes, n = 1024, k0 = 32):
     r = xor(Y, sha3_256(X))
     m = xor(X, mgf1(r, n - k0))
+    m = str(m).replace("0", "")
     return r, m
     
     
@@ -50,5 +51,7 @@ if __name__ == "__main__":
     print(hexlify(sha3_256(b"Hello World")))
     print(hexlify(mgf1(b"Hello World", 32)))
     X, Y, result = oaep_encode("Hello World", 1024, 32, 16)
-    oaep_decode(X, Y)
+    r, m = oaep_decode(X, Y)
+    print(m)
+
     
