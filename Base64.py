@@ -72,15 +72,3 @@ def decodeBase64(s):
   decoded = decoded[0:len( decoded ) - padd]
 
   return decoded
-
-if __name__ == "__main__":
-  # s = "its britney bitch"
-
-  # encodeBase64(s)
-
-  d = "aXRzIGJyaXRuZXkgYml0Y2h="
-
-  r = decodeBase64(d)
-
-  print(r)
-
