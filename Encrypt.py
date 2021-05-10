@@ -2,6 +2,8 @@ from PaddingScheme import oaep_encode, oaep_decode, sha3_256
 from GenKey import genKey, bitLength
 from binascii import hexlify
 from Convert import os2ip, i2osp
+from Formatting import format
+from Base64 import encodeBase64, decodeBase64
 import string 
 
 def encrypt(message: string, e: int, n: int):
@@ -18,7 +20,6 @@ def decrypt(c: int, d: int, n: int, tamanhoDaMensagem: int, tamanhoX: int, taman
 
     messageBytes = i2osp(m, tamanhoDaMensagem)
 
-    # TO DO utilzar o m no decode de oaep para mostrar o m inicial
     messageOaep = oaep_decode(messageBytes[:tamanhoX], messageBytes[tamanhoX:tamanhoX + tamanhoY])
 
     return messageOaep[1]
@@ -46,11 +47,16 @@ if __name__ == "__main__":
     publicKey, privateKey = genKey(p, q)
     
     
-    c, tamanhoMessage, TamanhoX, TamanhoY = encrypt("Tudo bem novo RSA", publicKey[0], publicKey[1])
+    c, tamanhoMessage, TamanhoX, TamanhoY = encrypt("Deu bom", publicKey[0], publicKey[1])
     result = decrypt(c, privateKey, publicKey[1], tamanhoMessage, TamanhoX, TamanhoY)
     print(result)
     
     assinatura = sign(message, privateKey, publicKey[1])
     print(verify(message, assinatura, publicKey[0], publicKey[1]))
 
-    
+    # Formatação
+    privateKeyBase64 = encodeBase64(str(privateKey))
+    publicKeyBase64 = encodeBase64(str(publicKey))
+    assinaturaBase64 = encodeBase64(str(assinatura))
+
+    format(privateKeyBase64, publicKeyBase64 ,assinaturaBase64)
